@@ -3,23 +3,35 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css"
+    integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
   <title>Alf</title>
 </head>
 
 <body>
-  <input type="radio" name="langVal" id="langEn" value="EN" checked>
-  <label for="langEn">EN</label>
-  <input type="radio" name="langVal" id="langSv" value="SV">
-  <label for="langSv">SV</label>
+  <div>
+    <input type="radio" name="langVal" id="langEn" value="EN" checked>
+    <label for="langEn">EN</label>
+    <input type="radio" name="langVal" id="langSv" value="SV">
+    <label for="langSv">SV</label>
+  </div>
+  <div>
+    <input type="checkbox" name="studyGroup" id="R1" checked>
+    <label for="R1">R1 - Fonetiska Alfabetet</label>
+    <input type="checkbox" name="studyGroup" id="R2">
+    <label for="R2">R2 - Q-Koden</label>
+  </div>
   <h1 id="question"></h1>
-  <input id="answer" type="text">
+  <div class="pure-form">
+    <input id="answer" class="pure-input-rounded" type="text">
+  </div>
   <ul id="log">
   </ul>
 </body>
 <script>
-  const cards = [
+  const cardsR1 = [
     {
       card: "A",
       en: "Alfa",
@@ -113,7 +125,7 @@
     {
       card: "S",
       en: "Sierra",
-      sv: "Sigrid"
+      sv: "Sigurd"
     },
     {
       card: "T",
@@ -167,35 +179,140 @@
     }
   ];
 
+  const cardsR2 = [
+    {
+      card: "QRK?",
+      en: "What is the readability of my signals (or those of...)?",
+      sv: "Vilken uppfattbarhet har mina signaler (eller signaller från...)?"
+    },
+    {
+      card: "QRK",
+      en: "The readability of your signals (or those of...) is: 1-5",
+      sv: "Uppfattbarheten hos dina signaler (eller signaller från...) är: 1-5"
+    },
+    {
+      card: "QRM?",
+      en: "Do you have interference? (from other stations)",
+      sv: "Är min sändning störd?"
+    },
+    {
+      card: "QRM",
+      en: "I have interference",
+      sv: "Störningar på din sändning är: 1 - 5"
+    },
+    {
+      card: "QRN?",
+      en: "Are you troubled by static noise?",
+      sv: "Besväras du av atmosfäriska störningar?"
+    },
+    {
+      card: "QRN",
+      en: "I am troubled by static noise",
+      sv: "Atmosfäriska störningar är: 1 - 5"
+    },
+    {
+      card: "QRO?",
+      en: "Shall I increase transmit power?",
+      sv: "Ska jag öka sändareffekten?"
+    },
+    {
+      card: "QRO",
+      en: "Please increase transmit power",
+      sv: "Öka sändareffekten"
+    },
+    {
+      card: "QRP?",
+      en: "Shall I decrease transmit power?",
+      sv: "Ska jag minska sändareffekten?"
+    },
+    {
+      card: "QRP",
+      en: "Please decrease transmit power",
+      sv: "Minska sändareffekten"
+    },
+    {
+      card: "QRS?",
+      en: "Shall I send more slowly?",
+      sv: "Ska jag minska sändningshastigheten?"
+    },
+    {
+      card: "QRS",
+      en: "Please send more slowly (... words per minute)",
+      sv: "Minska sändningshastigheten"
+    },
+    {
+      card: "QRT?",
+      en: "Shall I cease or suspend operation?",
+      sv: "Skall jag avbryta sändningen?"
+    },
+    {
+      card: "QRT",
+      en: "I am suspending operation",
+      sv: "Avbryt sändningen"
+    },
+    {
+      card: "QRV?",
+      en: "Ar you ready?",
+      sv: "Är du redo?"
+    },
+    {
+      card: "QRV",
+      en: "I am ready",
+      sv: "Jag är redo"
+    },
+    {
+      card: "QRX?",
+      en: "Shall I standby? / When will you call me again?",
+      sv: "När anropar du mig igen?"
+    },
+    {
+      card: "QRX",
+      en: "Please standby. / I will call you again at ... (hours) ony ... khz ( or MHz)",
+      sv: "Jag anropar dig igen (kl: ... h: ... kHz/MHz)"
+    },
+  ];
+
 
   const question = document.getElementById("question");
   const answer = document.getElementById("answer");
   const log = document.getElementById("log");
   const langEn = document.getElementById("langEn");
+  const studyGroups = document.getElementsByName("studyGroup");
   let currentCard = null;
 
   answer.onkeydown = (event) => {
     if (event.keyCode === 13) {
-      const correctAnswer = isEnglish() ? currentCard.en : currentCard.sv;
-      logAnswer(answer.value, new RegExp(correctAnswer, 'i').test(answer.value) ? "correct" : "incorrect");
+      const cardAnswer = isEnglish() ? currentCard.en : currentCard.sv;
+      logAnswer(answer.value, cardAnswer, new RegExp(cardAnswer, 'i').test(answer.value) ? true : false);
       newQuestion();
     }
+  };
+
+  const getStudyQuestions = () => {
+    let studyQuestions = [];
+    studyGroups.forEach((box) => {
+      if (box.checked) {
+        studyQuestions = studyQuestions.concat(eval("cards" + box.id));
+      }
+    });
+    return studyQuestions;
   };
 
   const isEnglish = () => {
     return langEn.checked;
   };
 
-  const logAnswer = (content, correctness) => {
+  const logAnswer = (content, answer, correctness) => {
     const newItem = document.createElement("li");
-    newItem.className = correctness;
-    newItem.innerText = currentCard.card + " - " + content;
+    newItem.className = correctness ? "correct" : "incorrect";
+    newItem.innerText = currentCard.card + " - " + (correctness ? content : "Rätt svar: " + answer );
     log.prepend(newItem);
   };
 
   const newQuestion = () => {
     answer.focus();
-    currentCard = cards[Math.floor(Math.random() * (isEnglish() ? 26 : 29))];
+    const studyQuestions = getStudyQuestions();
+    currentCard = studyQuestions[Math.floor(Math.random() * studyQuestions.length)];
     question.innerText = currentCard.card;
     answer.value = "";
   };

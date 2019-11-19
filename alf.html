@@ -20,6 +20,8 @@
     <label for="R1">R1 - Fonetiska Alfabetet</label>
     <input type="checkbox" name="studyGroup" id="R2">
     <label for="R2">R2 - Q-Koden</label>
+    <input type="checkbox" name="studyGroup" id="R3">
+    <label for="R3">R3 - Amatörradioförkortningar</label>
   </div>
   <h1 id="question"></h1>
   <div>
@@ -270,6 +272,68 @@
     },
   ];
 
+  const cardsR3 = [
+    {
+      card: "CW",
+      en: "Continuous waves",
+      sv: "Används för att beteckna telegrafi"
+    },
+    {
+      card: "CQ",
+      en: "General call to all stations",
+      sv: "Allmänt anrop"
+    },
+    {
+      card: "BK",
+      en: "Break",
+      sv: "Bryt"
+    },
+    {
+      card: "MSG",
+      en: "Message",
+      sv: "Meddelande"
+    },
+    {
+      card: "K",
+      en: "Invitation to send",
+      sv: "Kom, jag lyssnar"
+    },
+    {
+      card: "DE",
+      en: "From",
+      sv: "Från"
+    },
+    {
+      card: "PSE",
+      en: "Please",
+      sv: "Var snäll och..."
+    },
+    {
+      card: "R",
+      en: "Mottaget",
+      sv: "Received"
+    },
+    {
+      card: "RST",
+      en: "Report system",
+      sv: "Rapportsystem"
+    },
+    {
+      card: "RX",
+      en: "Radiomottagare",
+      sv: "Receiver"
+    },
+    {
+      card: "TX",
+      en: "Radiosändare",
+      sv: "Transmitter"
+    },
+    {
+      card: "UR",
+      en: "Your",
+      sv: "Din"
+    },
+  ];
 
   const question = document.getElementById("question");
   const answer = document.getElementById("answer");
@@ -293,6 +357,8 @@
         studyQuestions = studyQuestions.concat(eval("cards" + box.id));
       }
     });
+    console.log(studyQuestions.length + " questions loaded");
+    
     return studyQuestions;
   };
 
@@ -303,7 +369,7 @@
   const logAnswer = (content, answer, correctness) => {
     const newItem = document.createElement("li");
     newItem.className = correctness ? "correct" : "incorrect";
-    newItem.innerText = currentCard.card + " - " + (correctness ? content : "Rätt svar: " + answer );
+    newItem.innerText = currentCard.card + " - " + (correctness ? content : "Rätt svar: " + answer);
     log.prepend(newItem);
   };
 
@@ -344,6 +410,7 @@
   li.incorrect {
     background-color: rgb(216, 57, 57);
   }
+
   input {
     display: inline;
   }
